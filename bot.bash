@@ -21,7 +21,7 @@ tail -f botfile | $NETCAT | while true ; do
 		echo "Logging in: ${IRCD}:${IRCPORT} ${BOTNAME}"
 		echo "USER ${BOTNAME} 0 ${BOTNAME} :I iz a bot" >> botfile
 		echo "NICK ${BOTNAME}" >> botfile
-		echo "MODE +b" >> botfile
+		echo "MODE +B" >> botfile
 		echo "JOIN ${IRCCHANNEL} ${IRCPW}" >> botfile
 		started="yes"
 	fi
