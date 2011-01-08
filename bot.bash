@@ -1,21 +1,32 @@
 #!/usr/bin/env bash
 
-IRCD=irc.cat.pdx.edu
-IRCPORT=6697
+if [ ! -f config ] ; then
+	echo 'irc.freenode.com bashbot #bashbot-test' >config
+fi
+
+read IRCD IRCPORT BOTNAME IRCCHANNEL IRCPW <config
+
+LOGFILE=bot.log
 
 line=""
 started=""
-rm botfile
-mkfifo botfile
-tail -f botfile | tee bot.log | nc "$IRCD" "$IRCPORT"| while true ; do
+test -e botfile && rm botfile
+mkfifo botfile || exit 2 
+
+NETCAT="socat - OPENSSL:$IRCD:$IRCPORT,cipher=ALL:-LOW:@STRENGTH,method=TLSv1,verify=0"
+#NETCAT="nc $IRCD $IRCPORT"
+
+tail -f botfile | $NETCAT | while true ; do
 	if [ -z $started ] ; then
-		echo "USER bdbot 0 bdbot :I iz a bot" > botfile
-		echo "NICK bdbot" >> botfile
+		echo "Logging in: ${IRCD}:${IRCPORT} ${BOTNAME}"
+		echo "USER ${BOTNAME} 0 ${BOTNAME} :I iz a bot" >> botfile
+		echo "NICK ${BOTNAME}" >> botfile
 		echo "MODE +b" >> botfile
-		echo "JOIN #notzombies" >> botfile
+		echo "JOIN ${IRCCHANNEL} ${IRCPW}" >> botfile
 		started="yes"
 	fi
 	read irc
+	echo "> ${irc}" >>${LOGFILE}
 	case `echo "$irc" | cut -d " " -f 1` in
 		"PING") echo "PONG :`hostname`" >> botfile ;;
 	esac
@@ -30,6 +41,9 @@ tail -f botfile | tee bot.log | nc "$IRCD" "$IRCPORT"| while true ; do
 	fi
 	case $cmd in
 		"!add") line="$args $line" ;;
-		"!list") echo "PRIVMSG $chan :$line" >> botfile ;;
+		"!list")
+			echo ">$chan :$line" >>${LOGFILE}
+			echo "PRIVMSG $chan :$line" >> botfile
+		;;
 	esac
 done
