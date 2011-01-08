@@ -44,6 +44,6 @@ tail -f botfile | $NETCAT | while true ; do
 		"!list")
 			echo ">$chan :$line" >>${LOGFILE}
 			echo "PRIVMSG $chan :$nick:$line" >> botfile
-		;;
+			;;
 	esac
 done
