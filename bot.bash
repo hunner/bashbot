@@ -27,12 +27,10 @@ tail -f botfile | nc irc.cat.pdx.edu 6667 | while true ; do
     args=`echo ${irc##$barf :$cmd}|tr -d "\r\n"`
     nick="${irc%%!*}";nick="${nick#:}"
     if [ "`echo $cmd | cut -c1`" == "!" ] ; then
-        echo "Got command $cmd from channel $chan with arguments $args"
+        var=$(echo $nick $chan $cmd $args | ./scripts.bash)
+        if [[ ! -z $var ]] ; then
+            send "PRIVMSG $chan :$var"
+        fi
     fi
-    case $cmd in
-        "!add") line="$args $line" ;;
-        "!list") echo "PRIVMSG $chan :$line" >> botfile ;;
-        "!clear") line=""
-    esac
 done
 
