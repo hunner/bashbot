@@ -27,6 +27,7 @@ tail -f botfile | nc irc.cat.pdx.edu 6667 | while true ; do
     case $cmd in
         "!add") line="$args $line" ;;
         "!list") echo "PRIVMSG $chan :$line" >> botfile ;;
+        "!clear") line=""
     esac
 done
 
