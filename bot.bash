@@ -16,5 +16,13 @@ tail -f botfile | nc irc.cat.pdx.edu 6667 | while true ; do
         "PING") echo "PONG :`hostname`" >> botfile ;;
     esac
     #echo $irc
+    chan=`echo $irc | cut -d ' ' -f 3`
+    barf=`echo $irc | cut -d ' ' -f 1-3`
+    cmd=`echo ${irc##$barf :}|cut -d ' ' -f 1|tr -d "\r\n"`
+    args=`echo ${irc##$barf :$cmd}|tr -d "\r\n"`
+    nick="${irc%%!*}";nick="${nick#:}"
+    if [ "`echo $cmd | cut -c1`" == "!" ] ; then
+        echo "Got command $cmd from channel $chan with arguments $args"
+    fi
 done
 
