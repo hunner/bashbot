@@ -12,6 +12,9 @@ tail -f botfile | nc irc.cat.pdx.edu 6667 | while true ; do
         started="yes"
     fi
     read irc
+    case `echo $irc | cut -d " " -f 1` in
+        "PING") echo "PONG :`hostname`" >> botfile ;;
+    esac
     #echo $irc
 done
 
