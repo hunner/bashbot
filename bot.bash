@@ -24,5 +24,9 @@ tail -f botfile | nc irc.cat.pdx.edu 6667 | while true ; do
     if [ "`echo $cmd | cut -c1`" == "!" ] ; then
         echo "Got command $cmd from channel $chan with arguments $args"
     fi
+    case $cmd in
+        "!add") line="$args $line" ;;
+        "!list") echo "PRIVMSG $chan :$line" >> botfile ;;
+    esac
 done
 
