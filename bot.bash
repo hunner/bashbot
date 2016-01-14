@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ ! -f config ] ; then
-	echo 'irc.freenode.com bashbot #bashbot-test' >config
+	echo 'irc.freenode.com 6697 bashbot #bashbot-test' >config
 fi
 
 read IRCD IRCPORT BOTNAME IRCCHANNEL IRCPW <config
